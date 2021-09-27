@@ -31,3 +31,26 @@ model2
 model3 = randomForest(house$평균아파트매매가격.전국.~., data = house, importance=T, na.action = na.omit)
 importance(model3)
 varImpPlot(model3)
+
+
+####################
+train = house[1:80,]
+test = house[-(1:80),]
+nrow(test)
+model = randomForest(train$평균아파트매매가격.전국.~., data = train)
+summary(model)
+
+
+plot(test$평균아파트매매가격.전국.,type = 'o')
+#실제 데이터 비교해볼라고 plot찍음
+
+points(predict(model,test),col='red',type='o')
+#predict(모델, 데이터)
+#학습한 모델로 테스트 데이터 넣어서 predict한것을 points로 찍음
+
+pre = predict(model,test)
+
+plot(house$평균아파트매매가격.전국., type ='o')
+points(model$predicted, col='red', type = 'o')
+points(x = c(81:110),y = pre, col='magenta', type ='o')
+abline(v=c(80),col='blue',lty=2)
