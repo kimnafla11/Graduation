@@ -1,11 +1,11 @@
-diff_house = read.csv('Output/Data/diff_house.csv')
-names(diff_house)
-diff_house = diff_house[,-1]
+diff_kyeong = read.csv('Output/Data/diff_kyeong.csv')
+diff_kyeong = diff_kyeong[,-1]
+names(diff_kyeong)
 
 
 ##mw없이 gbm하기##
-train = diff_mat[1:80,]
-test = diff_mat[-(1:80),]
+train = diff_kyeong[1:80,]
+test = diff_kyeong[-(1:80),]
 train = as.data.frame(train)
 test = as.data.frame(test)
 
@@ -21,17 +21,17 @@ pre = predict(model, test)
 plot(test$V17, type = 'l')
 points(pre, type = 'l', col = 'red')
 
-plot(diff_house[,17], type ='l')
+plot(diff_kyeong[,17], type ='l')
 points(model$fit, col='red', type = 'l')
 points(x = c(81:110),y = pre, col='magenta', type ='l')
 abline(v=c(80),col='blue',lty=2)
 
-mse = mean((diff_house[81:110,17]-pre)^2) #1577.53
+mse = mean((diff_kyeong[81:110,17]-pre)^2) #1577.53
 
 
 ###############mw적용한 gbm###
 source("Code/Functions/DIFFGBM_FUNCTION.r")
-gmw = gmw(diff_house,43)
+gmw = gmw(diff_kyeong,43)
 plot(diff_mat[,17],type='l')
 points(gmw,type ='l',col='red')
 
@@ -40,20 +40,20 @@ dmwr = as.data.frame(dmwr)
 source("Code/Functions/DIFFGBM_FUNCTION.r")
 for(i in 43:96){
   source("Code/Functions/DIFFGBM_FUNCTION.r")
-  gmw=gmw(diff_house,i)
-  dmwr[i,]= mean((diff_house[i:109,17]-gmw[i:111])^2)
+  gmw=gmw(diff_kyeong,i)
+  dmwr[i,]= mean((diff_kyeong[i:109,17]-gmw[i:111])^2)
 }
-plot(dmwr$V1,type='l',xlim=c(43,96))
+plot(dmwr$V1,type='l',xlim=c(43,96),ylim=c(550, 1200))
 
 min(dmwr[43:96,])
-which(dmwr<=1319) #optimal ws 82 mse=1318.999
-
-gmw = gmw(diff_house, 82)
-plot(diff_mat[,17],type='l')
+which(dmwr<=615) #optimal ws 45 mse=614.5008
+source("Code/Functions/DIFFGBM_FUNCTION.r")
+gmw = gmw(diff_kyeong, 45)
+plot(diff_kyeong[,17],type='l')
 points(gmw,type='l',col='red')
-abline(v = 82, col='blue')
+abline(v = 45, col='blue')
 
-res = diff_house[81:109,17]-gmw[83:111]
+res = diff_kyeong[45:109,17]-gmw[45:111]
 plot(res, type='o')
 
 

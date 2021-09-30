@@ -1,6 +1,6 @@
-diff_house = read.csv('Output/Data/diff_house.csv')
-names(diff_house)
-diff_house = diff_house[,-1]
+diff_kang = read.csv('Output/Data/diff_kang.csv')
+diff_kang = diff_kang[,-1]
+names(diff_kang)
 
 
 ##mw없이 gbm하기##
@@ -21,17 +21,17 @@ pre = predict(model, test)
 plot(test$V17, type = 'l')
 points(pre, type = 'l', col = 'red')
 
-plot(diff_house[,17], type ='l')
+plot(diff_kang[,17], type ='l')
 points(model$fit, col='red', type = 'l')
 points(x = c(81:110),y = pre, col='magenta', type ='l')
 abline(v=c(80),col='blue',lty=2)
 
-mse = mean((diff_house[81:110,17]-pre)^2) #1577.53
+mse = mean((diff_kang[81:110,17]-pre)^2) #1577.53
 
 
 ###############mw적용한 gbm###
 source("Code/Functions/DIFFGBM_FUNCTION.r")
-gmw = gmw(diff_house,43)
+gmw = gmw(diff_kang,43)
 plot(diff_mat[,17],type='l')
 points(gmw,type ='l',col='red')
 
@@ -40,20 +40,20 @@ dmwr = as.data.frame(dmwr)
 source("Code/Functions/DIFFGBM_FUNCTION.r")
 for(i in 43:96){
   source("Code/Functions/DIFFGBM_FUNCTION.r")
-  gmw=gmw(diff_house,i)
-  dmwr[i,]= mean((diff_house[i:109,17]-gmw[i:111])^2)
+  gmw=gmw(diff_kang,i)
+  dmwr[i,]= mean((diff_kang[i:109,17]-gmw[i:111])^2)
 }
 plot(dmwr$V1,type='l',xlim=c(43,96))
 
 min(dmwr[43:96,])
-which(dmwr<=1319) #optimal ws 82 mse=1318.999
-
-gmw = gmw(diff_house, 82)
-plot(diff_mat[,17],type='l')
+which(dmwr<=24.3) #optimal ws 44 mse=24.25296
+source("Code/Functions/DIFFGBM_FUNCTION.r")
+gmw = gmw(diff_kang, 44)
+plot(diff_kang[,17],type='l')
 points(gmw,type='l',col='red')
-abline(v = 82, col='blue')
+abline(v = 44, col='blue')
 
-res = diff_house[81:109,17]-gmw[83:111]
+res = diff_kang[44:109,17]-gmw[44:111]
 plot(res, type='o')
 
 
@@ -89,3 +89,4 @@ mean(boot_limit2)
 
 abline(h=c(mean(boot_limit2)),col='red')
 #boot_limit의 평균값을 plot에 가로로(h) 찍음
+
